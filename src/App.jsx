@@ -57,14 +57,10 @@ function App() {
     } while (updatedPrincipal > 0);
 
     if ((counter - 1) % additionalAmountPerMonth === 0 && Number(data[data.length - 1].balance) < 0) {
-      // principalPerMonth = principalPerMonth + additionalAmount;
-
       data[data.length - 1].additionalAmount = 0;
       data[data.length - 1].emi = monthlyFixedEMI;
       data[data.length - 1].balance = 0;
-
     }
-
 
     setEmis([...data]);
 
