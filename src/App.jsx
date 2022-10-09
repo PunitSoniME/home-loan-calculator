@@ -9,9 +9,9 @@ const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 
 function App() {
 
-  const [principal, setPrincipal] = useState(3933320);
-  const [interest, setInterest] = useState(8.15);
-  const [tenureInMonths, setTenureInMonths] = useState(240);
+  const [principal, setPrincipal] = useState(0);
+  const [interest, setInterest] = useState(0);
+  const [tenureInMonths, setTenureInMonths] = useState(0);
   const [additionalAmount, setAdditionalAmount] = useState(0);
   const [additionalAmountPerMonth, setAdditionalAmountPerMonth] = useState(0);
 
