@@ -132,26 +132,25 @@ export default function Calculator() {
                 <hr />
 
                 <div className="row">
-
-                    <div className="col-6">
+                    <div className="col-12 col-md-6 mb-3">
                         <div className="form-floating">
                             <input type="text" value={preInstallment} onChange={(e) => {
                                 if (checkValueIsValid(e.currentTarget.value)) {
                                     setPreInstallment(e.currentTarget.value);
                                 }
-                            }} className="form-control" id="preInstallment" placeholder="Pre Installments (PI)" />
-                            <label htmlFor="preInstallment" className="form-label">Pre Installments (PI)</label>
+                            }} className="form-control" id="preInstallment" placeholder="Pre Installment Amount" />
+                            <label htmlFor="preInstallment" className="form-label">Pre Installment Amount</label>
                         </div>
                     </div>
 
-                    <div className="col-6">
+                    <div className="col-12 col-md-6">
                         <div className="form-floating">
                             <input type="text" value={preInstallmentDuration} onChange={(e) => {
                                 if (checkValueIsValid(e.currentTarget.value)) {
                                     setPreInstallmentDuration(e.currentTarget.value);
                                 }
-                            }} className="form-control" id="preInstallmentDuration" placeholder="PI Duration" />
-                            <label htmlFor="preInstallmentDuration" className="form-label">PI Duration</label>
+                            }} className="form-control" id="preInstallmentDuration" placeholder="Pre Installment Duration ( Months )" />
+                            <label htmlFor="preInstallmentDuration" className="form-label">Pre Installment Duration ( Months )</label>
                         </div>
                     </div>
 
