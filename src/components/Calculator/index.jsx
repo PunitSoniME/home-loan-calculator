@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import React from 'react'
 
 const formatNumber = (amount) => {
-    return new Intl.NumberFormat('en-IN', { maximumSignificantDigits: amount.toString().length }).format(amount);
+    return amount ? new Intl.NumberFormat('en-IN', { maximumSignificantDigits: amount.toString().length }).format(amount) : "";
 }
 
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -29,7 +29,7 @@ export default function Calculator() {
     }, [principal, interest, tenureInMonths]);
 
     useEffect(() => {
-        if (preInstallment && preInstallmentDuration)
+        if (preInstallment || preInstallmentDuration)
             calculateInterest();
     }, [preInstallment, preInstallmentDuration]);
 
@@ -95,7 +95,7 @@ export default function Calculator() {
                 <div className="row">
 
                     <div className="col-6 mb-3">
-                        <div class="form-floating">
+                        <div className="form-floating">
                             <input type="text" value={principal} onChange={(e) => {
                                 if (checkValueIsValid(e.currentTarget.value)) {
                                     setPrincipal(e.currentTarget.value);
@@ -106,7 +106,7 @@ export default function Calculator() {
                     </div>
 
                     <div className="col-6">
-                        <div class="form-floating mb-3">
+                        <div className="form-floating mb-3">
                             <input type="text" value={interest} onChange={(e) => {
                                 if (checkValueIsValid(e.currentTarget.value)) {
                                     setInterest(e.currentTarget.value);
@@ -117,7 +117,7 @@ export default function Calculator() {
                     </div>
 
                     <div className="col-6">
-                        <div class="form-floating">
+                        <div className="form-floating">
                             <input type="text" value={tenureInMonths} onChange={(e) => {
                                 if (checkValueIsValid(e.currentTarget.value)) {
                                     setTenureInMonths(e.currentTarget.value);
@@ -134,24 +134,24 @@ export default function Calculator() {
                 <div className="row">
 
                     <div className="col-6">
-                        <div class="form-floating">
+                        <div className="form-floating">
                             <input type="text" value={preInstallment} onChange={(e) => {
                                 if (checkValueIsValid(e.currentTarget.value)) {
                                     setPreInstallment(e.currentTarget.value);
                                 }
-                            }} className="form-control" id="preInstallment" placeholder="Pre Installments" />
-                            <label htmlFor="preInstallment" className="form-label">Pre Installments</label>
+                            }} className="form-control" id="preInstallment" placeholder="Pre Installments (PI)" />
+                            <label htmlFor="preInstallment" className="form-label">Pre Installments (PI)</label>
                         </div>
                     </div>
 
                     <div className="col-6">
-                        <div class="form-floating">
+                        <div className="form-floating">
                             <input type="text" value={preInstallmentDuration} onChange={(e) => {
                                 if (checkValueIsValid(e.currentTarget.value)) {
                                     setPreInstallmentDuration(e.currentTarget.value);
                                 }
-                            }} className="form-control" id="preInstallmentDuration" placeholder="Pre Installments Duration" />
-                            <label htmlFor="preInstallmentDuration" className="form-label">Pre Installments Duration</label>
+                            }} className="form-control" id="preInstallmentDuration" placeholder="PI Duration" />
+                            <label htmlFor="preInstallmentDuration" className="form-label">PI Duration</label>
                         </div>
                     </div>
 
@@ -160,7 +160,7 @@ export default function Calculator() {
                 <hr />
 
                 {
-                    emis.length > 0 ? <div class="alert alert-danger fw-bold" role="alert">
+                    emis.length > 0 ? <div className="alert alert-danger fw-bold" role="alert">
                         Total Interest - {totalInterest}
                     </div> : ""
                 }
