@@ -31,17 +31,18 @@ export default function Calculator() {
             interestRef.current.value = "";
         } else if (!checkValueIsValid(tenureInMonthsRef.current.value)) {
             tenureInMonthsRef.current.value = "";
-        } else if (principalRef.current.value && interestRef.current.value && tenureInMonthsRef.current.value)
+        } else if (principalRef.current.value && interestRef.current.value && tenureInMonthsRef.current.value) {
             calculateEMIs();
+        }
     }
 
     const calculatePreInstallments = () => {
-        if (!checkValueIsValid(preInstallmentRef.current.value)) {
-            preInstallmentRef.current.value = "";
-        } else if (!checkValueIsValid(preInstallmentDurationRef.current.value)) {
-            preInstallmentDurationRef.current.value = "";
-        } else if (preInstallmentRef.current.value && preInstallmentDurationRef.current.value)
-            calculateEMIs();
+        // if (!checkValueIsValid(preInstallmentRef.current.value)) {
+        //     preInstallmentRef.current.value = "";
+        // } else if (!checkValueIsValid(preInstallmentDurationRef.current.value)) {
+        //     preInstallmentDurationRef.current.value = "";
+        // } else if (preInstallmentRef.current.value && preInstallmentDurationRef.current.value)
+        calculateEMIs();
     }
 
     const calculateEMIs = () => {
@@ -114,22 +115,38 @@ export default function Calculator() {
 
                     <div className="col-6 mb-3">
                         <div className="form-floating">
-                            <input type="text" inputMode="numeric" ref={principalRef} onBlur={calculate} className="form-control" id="principal" placeholder="Principal Amount" />
+                            <input type="text" inputMode="numeric" ref={principalRef} onChange={calculate} className="form-control" id="principal" placeholder="Principal Amount" />
                             <label htmlFor="principal" className="form-label">Principal Amount *</label>
                         </div>
                     </div>
 
                     <div className="col-6">
                         <div className="form-floating mb-3">
-                            <input type="text" inputMode="numeric" ref={interestRef} onBlur={calculate} className="form-control" id="interest" placeholder="Interest Rate % *" />
+                            <input type="text" inputMode="numeric" ref={interestRef} onChange={calculate} className="form-control" id="interest" placeholder="Interest Rate % *" />
                             <label htmlFor="interest" className="form-label">Interest Rate % *</label>
                         </div>
                     </div>
 
                     <div className="col-12 col-md-6">
                         <div className="form-floating">
-                            <input type="text" inputMode="numeric" ref={tenureInMonthsRef} onBlur={calculate} className="form-control" id="tenureInMonths" placeholder="Tenure ( in months )" />
+                            <input type="text" inputMode="numeric" ref={tenureInMonthsRef} onChange={() => {
+                                const tenureInMonths = tenureInMonthsRef.current.value;
+
+                                if (checkValueIsValid(tenureInMonths)) {
+                                    if (Number(tenureInMonths) > 0 && Number(tenureInMonths) <= 360) {
+                                        calculate();
+                                    } else {
+                                        tenureInMonthsRef.current.value = "";
+                                        setEmis([]);
+                                    }
+                                } else {
+                                    tenureInMonthsRef.current.value = "";
+                                    setEmis([]);
+                                }
+
+                            }} className="form-control" id="tenureInMonths" placeholder="Tenure ( in months )" />
                             <label htmlFor="tenureInMonths" className="form-label">Tenure ( in months ) *</label>
+                            <span className="form-text">Minumum value: 1, Maximum value: 360</span>
                         </div>
                     </div>
 
@@ -140,14 +157,14 @@ export default function Calculator() {
                 <div className="row">
                     <div className="col-12 col-md-6 mb-3">
                         <div className="form-floating">
-                            <input type="text" inputMode="numeric" ref={preInstallmentRef} onBlur={calculatePreInstallments} className="form-control" id="preInstallment" placeholder="Pre Installment Amount" />
+                            <input type="text" inputMode="numeric" ref={preInstallmentRef} onChange={calculatePreInstallments} className="form-control" id="preInstallment" placeholder="Pre Installment Amount" />
                             <label htmlFor="preInstallment" className="form-label">Pre Installment Amount</label>
                         </div>
                     </div>
 
                     <div className="col-12 col-md-6">
                         <div className="form-floating">
-                            <input type="text" inputMode="numeric" ref={preInstallmentDurationRef} onBlur={calculatePreInstallments} className="form-control" id="preInstallmentDuration" placeholder="Pre Installment Duration ( Months )" />
+                            <input type="text" inputMode="numeric" ref={preInstallmentDurationRef} onChange={calculatePreInstallments} className="form-control" id="preInstallmentDuration" placeholder="Pre Installment Duration ( Months )" />
                             <label htmlFor="preInstallmentDuration" className="form-label">Pre Installment Duration ( Months )</label>
                         </div>
                     </div>
@@ -179,16 +196,16 @@ export default function Calculator() {
                                 <tbody>
                                     {
                                         emis.map((d, index) => (
-                                            <tr key={index} className={d.monthYear.indexOf("Jan") > -1 ? 'fw-bold' : ''}>
+                                            <tr key={index} className={d.preInstallment && ((index + 1) % preInstallmentDurationRef.current.value === 0) ? 'bg-primary fw-bold text-white' : ''}>
                                                 <td>{d.monthYear}</td>
                                                 <td>{formatNumber(d.principal)}
                                                     {
-                                                        d.preInstallment && ((index + 1) % preInstallmentDuration === 0) ? ` + ${formatNumber(preInstallment)}` : ""
+                                                        d.preInstallment && ((index + 1) % preInstallmentDurationRef.current.value === 0) ? ` + ${formatNumber(preInstallmentRef.current.value)}` : ""
                                                     }
                                                 </td>
                                                 <td>{formatNumber(d.interest)}</td>
                                                 <td>{formatNumber(d.emi)}</td>
-                                                <td>{formatNumber(d.balance) < 0 ? "0" : formatNumber(d.balance)}</td>
+                                                <td>{formatNumber(d.balance) <= 0 ? "0" : formatNumber(d.balance)}</td>
                                             </tr>
                                         ))
                                     }
