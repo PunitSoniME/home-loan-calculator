@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState, useRef } from 'react'
 import React from 'react'
 
 const formatNumber = (amount) => {
@@ -14,26 +14,44 @@ const checkValueIsValid = (character) => {
 
 export default function Calculator() {
 
-    const [principal, setPrincipal] = useState("");
-    const [interest, setInterest] = useState("");
-    const [tenureInMonths, setTenureInMonths] = useState("");
-    const [preInstallment, setPreInstallment] = useState("");
-    const [preInstallmentDuration, setPreInstallmentDuration] = useState("");
+    const principalRef = useRef("");
+    const interestRef = useRef("");
+    const tenureInMonthsRef = useRef("");
+
+    const preInstallmentRef = useRef("");
+    const preInstallmentDurationRef = useRef("");
 
     const [totalInterest, setTotalInterest] = useState("0");
     const [emis, setEmis] = useState([]);
 
-    useEffect(() => {
-        if (principal && interest && tenureInMonths)
-            calculateInterest();
-    }, [principal, interest, tenureInMonths]);
+    const calculate = () => {
+        if (!checkValueIsValid(principalRef.current.value)) {
+            principalRef.current.value = "";
+        } else if (!checkValueIsValid(interestRef.current.value)) {
+            interestRef.current.value = "";
+        } else if (!checkValueIsValid(tenureInMonthsRef.current.value)) {
+            tenureInMonthsRef.current.value = "";
+        } else if (principalRef.current.value && interestRef.current.value && tenureInMonthsRef.current.value)
+            calculateEMIs();
+    }
 
-    useEffect(() => {
-        if (preInstallment || preInstallmentDuration)
-            calculateInterest();
-    }, [preInstallment, preInstallmentDuration]);
+    const calculatePreInstallments = () => {
+        if (!checkValueIsValid(preInstallmentRef.current.value)) {
+            preInstallmentRef.current.value = "";
+        } else if (!checkValueIsValid(preInstallmentDurationRef.current.value)) {
+            preInstallmentDurationRef.current.value = "";
+        } else if (preInstallmentRef.current.value && preInstallmentDurationRef.current.value)
+            calculateEMIs();
+    }
 
-    const calculateInterest = () => {
+    const calculateEMIs = () => {
+
+        const principal = principalRef.current.value;
+        const interest = interestRef.current.value;
+        const tenureInMonths = tenureInMonthsRef.current.value;
+
+        const preInstallment = preInstallmentRef.current.value;
+        const preInstallmentDuration = preInstallmentDurationRef.current.value;
 
         let updatedPrincipal = Number(principal);
         let modifiedTenureInMonths = Number(tenureInMonths);
@@ -96,33 +114,21 @@ export default function Calculator() {
 
                     <div className="col-6 mb-3">
                         <div className="form-floating">
-                            <input type="text" value={principal} onChange={(e) => {
-                                if (checkValueIsValid(e.currentTarget.value)) {
-                                    setPrincipal(e.currentTarget.value);
-                                }
-                            }} className="form-control" id="principal" placeholder="Principal Amount" />
+                            <input type="text" inputMode="numeric" ref={principalRef} onBlur={calculate} className="form-control" id="principal" placeholder="Principal Amount" />
                             <label htmlFor="principal" className="form-label">Principal Amount *</label>
                         </div>
                     </div>
 
                     <div className="col-6">
                         <div className="form-floating mb-3">
-                            <input type="text" value={interest} onChange={(e) => {
-                                if (checkValueIsValid(e.currentTarget.value)) {
-                                    setInterest(e.currentTarget.value);
-                                }
-                            }} className="form-control" id="interest" placeholder="Interest Rate % *" />
+                            <input type="text" inputMode="numeric" ref={interestRef} onBlur={calculate} className="form-control" id="interest" placeholder="Interest Rate % *" />
                             <label htmlFor="interest" className="form-label">Interest Rate % *</label>
                         </div>
                     </div>
 
-                    <div className="col-6">
+                    <div className="col-12 col-md-6">
                         <div className="form-floating">
-                            <input type="text" value={tenureInMonths} onChange={(e) => {
-                                if (checkValueIsValid(e.currentTarget.value)) {
-                                    setTenureInMonths(e.currentTarget.value);
-                                }
-                            }} className="form-control" id="tenureInMonths" placeholder="Tenure ( in months )" />
+                            <input type="text" inputMode="numeric" ref={tenureInMonthsRef} onBlur={calculate} className="form-control" id="tenureInMonths" placeholder="Tenure ( in months )" />
                             <label htmlFor="tenureInMonths" className="form-label">Tenure ( in months ) *</label>
                         </div>
                     </div>
@@ -134,22 +140,14 @@ export default function Calculator() {
                 <div className="row">
                     <div className="col-12 col-md-6 mb-3">
                         <div className="form-floating">
-                            <input type="text" value={preInstallment} onChange={(e) => {
-                                if (checkValueIsValid(e.currentTarget.value)) {
-                                    setPreInstallment(e.currentTarget.value);
-                                }
-                            }} className="form-control" id="preInstallment" placeholder="Pre Installment Amount" />
+                            <input type="text" inputMode="numeric" ref={preInstallmentRef} onBlur={calculatePreInstallments} className="form-control" id="preInstallment" placeholder="Pre Installment Amount" />
                             <label htmlFor="preInstallment" className="form-label">Pre Installment Amount</label>
                         </div>
                     </div>
 
                     <div className="col-12 col-md-6">
                         <div className="form-floating">
-                            <input type="text" value={preInstallmentDuration} onChange={(e) => {
-                                if (checkValueIsValid(e.currentTarget.value)) {
-                                    setPreInstallmentDuration(e.currentTarget.value);
-                                }
-                            }} className="form-control" id="preInstallmentDuration" placeholder="Pre Installment Duration ( Months )" />
+                            <input type="text" inputMode="numeric" ref={preInstallmentDurationRef} onBlur={calculatePreInstallments} className="form-control" id="preInstallmentDuration" placeholder="Pre Installment Duration ( Months )" />
                             <label htmlFor="preInstallmentDuration" className="form-label">Pre Installment Duration ( Months )</label>
                         </div>
                     </div>
