@@ -135,8 +135,9 @@ export default function Calculator() {
                 <Grid2 container spacing={2} px={0}>
                     <Grid2 xs={6}>
                         <TextField fullWidth id="principal" inputRef={principalRef} label="Principal Amount" required={true} defaultValue="100000"
-                            variant="outlined" type="number" inputMode="numeric" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: 0, max: 100000000 }}
-                            autoFocus onBlur={() => {
+                            variant="outlined" type="number" inputMode="numeric" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} autoFocus
+                            onFocus={() => { principalRef.current.select(); }}
+                            onBlur={() => {
                                 if (Number(principalRef.current.value) < 100000) {
                                     principalRef.current.value = "100000";
                                     calculate();
@@ -148,12 +149,12 @@ export default function Calculator() {
                     <Grid2 xs={6}>
                         <TextField fullWidth id="interest" inputRef={interestRef} label="Interest Rate %" required={true}
                             variant="outlined" type="number" inputMode="numeric" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                            onBlur={calculate} />
+                            onFocus={() => { interestRef.current.select(); }} onBlur={calculate} />
                     </Grid2>
                     <Grid2 xs={12}>
                         <TextField fullWidth id="tenureInMonths" inputRef={tenureInMonthsRef} label="Tenure ( in months )" required={true}
                             variant="outlined" type="number" inputMode="numeric" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                            onBlur={calculate} />
+                            onFocus={() => { tenureInMonthsRef.current.select(); }} onBlur={calculate} />
                     </Grid2>
                 </Grid2>
 
@@ -161,12 +162,12 @@ export default function Calculator() {
                     <Grid2 xs={12}>
                         <TextField fullWidth id="preInstallment" inputRef={preInstallmentRef} label="Pre Installment Amount" required={false}
                             variant="outlined" type="number" inputMode="numeric" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                            onBlur={calculate} />
+                            onFocus={() => { preInstallmentRef.current.select(); }} onBlur={calculate} />
                     </Grid2>
                     <Grid2 xs={12}>
                         <TextField fullWidth id="preInstallmentDuration" inputRef={preInstallmentDurationRef} label="Pre Installment Duration ( Months )" required={false}
                             variant="outlined" type="number" inputMode="numeric" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                            onBlur={calculate} />
+                            onFocus={() => { preInstallmentDurationRef.current.select(); }} onBlur={calculate} />
                     </Grid2>
                 </Grid2>
 
