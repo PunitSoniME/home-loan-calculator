@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Grid2 from '@mui/material/Unstable_Grid2';
-import { Box, Button, TextField, Alert, Paper, Divider } from '@mui/material';
+import { Box, Button, TextField, Alert, Paper, Divider, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
 
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -41,6 +41,11 @@ const checkValueIsValid = (character: string) => {
     return Number(character) === 0 || p.test(character);
 }
 
+const PRE_INSTALLEMENT_SETTINGS = {
+    recurring: "recurring",
+    onetime: "onetime"
+};
+
 export default function Calculator() {
 
     let principalRef = useRef<any>("");
@@ -48,6 +53,7 @@ export default function Calculator() {
     let tenureInMonthsRef = useRef<any>("");
     let preInstallmentRef = useRef<any>("");
     let preInstallmentDurationRef = useRef<any>("");
+    const [preInstallmentSettings, setPreInstallmentSettings] = useState(PRE_INSTALLEMENT_SETTINGS.recurring);
 
     const [totalInterest, setTotalInterest] = useState("0");
     const [emis, setEmis] = useState([]);
@@ -70,8 +76,8 @@ export default function Calculator() {
         const interest = interestRef.current.value;
         const tenureInMonths = tenureInMonthsRef.current.value;
 
-        const preInstallment = preInstallmentRef.current.value;
-        const preInstallmentDuration = preInstallmentDurationRef.current.value;
+        let preInstallment = preInstallmentRef.current.value;
+        let preInstallmentDuration = preInstallmentDurationRef.current.value;
 
         let updatedPrincipal = Number(principal);
         let modifiedTenureInMonths = Number(tenureInMonths);
@@ -102,6 +108,11 @@ export default function Calculator() {
 
             if (counter % Number(preInstallmentDuration) === 0) {
                 principalPerMonth = principalPerMonth + Number(preInstallment);
+
+                if (preInstallmentSettings === PRE_INSTALLEMENT_SETTINGS.onetime) {
+                    preInstallmentDuration = 0;
+                    preInstallment = 0;
+                }
             }
 
             date.setMonth(date.getMonth() + 1);
@@ -126,7 +137,16 @@ export default function Calculator() {
 
         setTotalInterest(formatNumber(calculatedTotalInterest));
         setEmis([...data]);
+
     }
+
+    const handleChange = (event) => {
+        setPreInstallmentSettings(event.target.value);
+    }
+
+    useEffect(() => {
+        calculate();
+    }, [preInstallmentSettings]);
 
     return (
         <Grid2 container spacing={2}>
@@ -159,6 +179,23 @@ export default function Calculator() {
                 </Grid2>
 
                 <Grid2 container spacing={2} px={0}>
+
+                    <Grid2 xs={12}>
+                        <FormControl>
+                            <FormLabel id="pre-installment-detaills">Pre Installement Details</FormLabel>
+                            <RadioGroup
+                                row
+                                aria-labelledby="pre-installment-detaills"
+                                name="pre-installment-detaills-group"
+                                value={preInstallmentSettings}
+                                onChange={handleChange}
+                            >
+                                <FormControlLabel value={PRE_INSTALLEMENT_SETTINGS.recurring} control={<Radio />} label="Recurring" />
+                                <FormControlLabel value={PRE_INSTALLEMENT_SETTINGS.onetime} control={<Radio />} label="One Time" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Grid2>
+
                     <Grid2 xs={12}>
                         <TextField fullWidth id="preInstallment" inputRef={preInstallmentRef} label="Pre Installment Amount" required={false}
                             variant="outlined" type="number" inputMode="numeric" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
